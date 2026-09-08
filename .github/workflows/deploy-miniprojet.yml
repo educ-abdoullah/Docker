@@ -1,0 +1,58 @@
+name: Lancer miniprojet
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-mini-project:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: MiniProjetDocker
+
+    steps:
+      - name: Recuperer le projet
+        uses: actions/checkout@v4
+
+      - name: Creer reseau Docker
+        run: |
+          docker network create exonet
+
+      - name: Lancer MySQL
+        run: |
+          docker run -d \
+            --name mysql-db \
+            --network exonet \
+            -e MYSQL_ROOT_PASSWORD=root123 \
+            -e MYSQL_DATABASE=tpdb \
+            mysql:5.7
+
+      - name: Construire image Flask
+        run: |
+          docker build -t mini-projet-docker .
+
+      - name: Lancer Flask
+        run: |
+          docker run -d \
+            --name flask-app \
+            --network exonet \
+            -p 5000:5000 \
+            mini-projet-docker
+
+      - name: Verifier les conteneurs
+        run: |
+          docker ps
+
+      - name: Afficher logs Flask
+        run: |
+          sleep 5
+          docker logs flask-app
+
+      - name: Tester page web
+        run: |
+          curl --fail http://localhost:5000
+
+      - name: Afficher reseau
+        run: |
+          docker network inspect exonet
