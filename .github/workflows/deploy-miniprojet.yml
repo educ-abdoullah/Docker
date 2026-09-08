@@ -46,7 +46,7 @@ jobs:
 
       - name: Afficher logs Flask
         run: |
-          sleep 5
+          sleep 25 
           docker logs flask-app
 
       - name: Tester page web
