@@ -24,7 +24,7 @@ jobs:
           docker run -d \
             --name mysql-db \
             --network exonet \
-            -e MYSQL_ROOT_PASSWORD=root123 \
+            -e MYSQL_ROOT_PASSWORD=root \
             -e MYSQL_DATABASE=tpdb \
             mysql:5.7
 
